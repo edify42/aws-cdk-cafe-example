@@ -19,8 +19,8 @@ setuptools.setup(
     packages=setuptools.find_packages(where="cake_listing_app"),
 
     install_requires=[
-        "aws-cdk-lib==2.0.0-rc.23",
-        "constructs>=10.0.0,<11.0.0",
+        "aws-cdk-lib==2.20.0",
+        "constructs==10.0.9",
     ],
 
     python_requires=">=3.6",

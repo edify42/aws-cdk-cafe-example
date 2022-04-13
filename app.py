@@ -2,27 +2,31 @@
 import os
 
 import aws_cdk as cdk
+from aws_cdk import aws_iam as iam
 
-from cake_listing_app.cake_listing_app_stack import CakeListingAppStack
+from cdk_workshop.coffee_listing_app import CoffeeListingAppStack
 
 
 app = cdk.App()
-CakeListingAppStack(app, "CakeListingAppStack",
-    # If you don't specify 'env', this stack will be environment-agnostic.
-    # Account/Region-dependent features and context lookups will not work,
-    # but a single synthesized template can be deployed anywhere.
-
-    # Uncomment the next line to specialize this stack for the AWS Account
-    # and Region that are implied by the current CLI configuration.
-
-    #env=cdk.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'), region=os.getenv('CDK_DEFAULT_REGION')),
-
-    # Uncomment the next line if you know exactly what Account and Region you
-    # want to deploy the stack to. */
-
-    #env=cdk.Environment(account='123456789012', region='us-east-1'),
-
-    # For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html
-    )
+CoffeeListingAppStack(app, "CakeListingAppStack",
+    synth_commands=[
+      "aws codeartifact login --tool pip --repository cdkadvancedlab --domain cdkadvancedlab",
+      "npm ci",
+      "pip install -r requirements.txt",
+      "npx cdk synth",
+    ],
+    code_build_policies=[
+      iam.PolicyStatement(
+        effect=iam.Effect.ALLOW,
+        actions=["codeartifact:*"],
+        resources=["*"],
+      ),
+      iam.PolicyStatement(
+        effect=iam.Effect.ALLOW,
+        actions=["sts:*"],
+        resources=["*"],
+      ),
+    ]
+)
 
 app.synth()
